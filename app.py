@@ -12,7 +12,7 @@ if "FIREBASE_KEY" in os.environ:
     cred_path = "firebase-key.json"
 else:
     # Local fallback (you can still use your local JSON in VS Code)
-    cred_path = "C:\Users\charu\Downloads\basic1-3f3e3-firebase-adminsdk-fbsvc-063b0ac330.json"
+    cred_path = "C:\\Users\\charu\\Downloads\\basic1-3f3e3-firebase-adminsdk-fbsvc-063b0ac330.json"
 cred = credentials.Certificate(cred_path)
 firebase_admin.initialize_app(cred)
 
@@ -68,4 +68,5 @@ def delete_city(city_name):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
