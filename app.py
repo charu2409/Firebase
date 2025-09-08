@@ -43,7 +43,7 @@ def create_city():
     return jsonify({"message": "City created", "data": data}), 201
 
 # UPDATE (partial merge)
-@app.route("/city/<city_name>", methods=["PUT"])
+@app.route("/update-city", methods=["PUT"])
 def update_city(city_name):
     data = request.get_json()
     if not data:
@@ -55,7 +55,7 @@ def update_city(city_name):
     return jsonify({"message": "City updated", "data": doc_ref.get().to_dict()}), 200
 
 # DELETE
-@app.route("/city/<city_name>", methods=["POST"])
+@app.route("/delete-city", methods=["POST"])
 def delete_city(city_name):
     doc_ref = cities.document(city_name.strip().lower())
     if not doc_ref.get().exists:
@@ -66,6 +66,7 @@ def delete_city(city_name):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
