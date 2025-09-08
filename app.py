@@ -7,15 +7,13 @@ app = Flask(__name__)
 
 # --- Initialize Firebase Admin using service account JSON path in env var ---
 if "FIREBASE_KEY" in os.environ:
-    with open("firebase-key.json", "w") as f:
-        f.write(os.environ["FIREBASE_KEY"])
-    cred_path = "firebase-key.json"
+    cred_dict = json.loads(os.environ["FIREBASE_KEY"])
+    cred = credentials.Certificate(cred_dict)
 else:
-    # Local fallback (you can still use your local JSON in VS Code)
-    cred_path = "C:\\Users\\charu\\Downloads\\basic1-3f3e3-firebase-adminsdk-fbsvc-063b0ac330.json"
-cred = credentials.Certificate(cred_path)
-firebase_admin.initialize_app(cred)
+    # fallback for local testing
+    cred = credentials.Certificate("C:/Users/charu/Downloads/basic1-3f3e3-firebase-adminsdk-fbsvc-063b0ac330.json")
 
+firebase_admin.initialize_app(cred)
 db = firestore.client()
 cities = db.collection("cities")
 
@@ -68,5 +66,6 @@ def delete_city(city_name):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
