@@ -1,7 +1,7 @@
-import os
+import os,json
 from flask import Flask, request, jsonify
 import firebase_admin
-from firebase_admin import credentials, firestore
+from firebase_admin import credentials, initialize_app,firestore
 
 app = Flask(__name__)
 
@@ -66,6 +66,7 @@ def delete_city(city_name):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
