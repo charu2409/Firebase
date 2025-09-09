@@ -44,7 +44,7 @@ def create_city():
 
 # UPDATE (partial merge)
 @app.route("/update-city", methods=["PUT"])
-def update_city(city_name):
+def update_city():
     data = request.get_json()
     if not data:
         return jsonify({"error": "JSON body required"}), 400
@@ -66,6 +66,7 @@ def delete_city(city_name):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
