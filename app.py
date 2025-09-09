@@ -79,11 +79,3 @@ def delete_city():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-
-
-
-
-
-
-
