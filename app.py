@@ -46,26 +46,40 @@ def create_city():
 @app.route("/update-city", methods=["PUT"])
 def update_city():
     data = request.get_json()
-    if not data:
-        return jsonify({"error": "JSON body required"}), 400
-    doc_ref = cities.document(city_name.strip().lower())
+    if not data or not data.get("city"):
+        return jsonify({"error": "JSON with 'city' field required"}), 400
+    
+    city_name = data["city"].strip().lower()
+    doc_ref = cities.document(city_name)
+    
     if not doc_ref.get().exists:
         return jsonify({"error": "City not found"}), 404
+    
     doc_ref.set(data, merge=True)  # merge=True does partial update
     return jsonify({"message": "City updated", "data": doc_ref.get().to_dict()}), 200
 
+
 # DELETE
-@app.route("/delete-city", methods=["POST"])
-def delete_city(city_name):
-    doc_ref = cities.document(city_name.strip().lower())
+@app.route("/delete-city", methods=["DELETE"])
+def delete_city():
+    data = request.get_json()
+    if not data or not data.get("city"):
+        return jsonify({"error": "JSON with 'city' field required"}), 400
+    
+    city_name = data["city"].strip().lower()
+    doc_ref = cities.document(city_name)
+    
     if not doc_ref.get().exists:
         return jsonify({"error": "City not found"}), 404
+    
     deleted = doc_ref.get().to_dict()
     doc_ref.delete()
     return jsonify({"message": "City deleted", "data": deleted}), 200
 
+
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
