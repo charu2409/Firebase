@@ -1,7 +1,7 @@
-import os,json
+import os, json
 from flask import Flask, request, jsonify, render_template
 import firebase_admin
-from firebase_admin import credentials, initialize_app,firestore
+from firebase_admin import credentials, firestore
 
 app = Flask(__name__)
 
@@ -23,9 +23,9 @@ def ui():
 
 @app.route("/")
 def home():
-    return "Simple Cities API — endpoints: GET /city/<name>, POST /city, PUT /city/<name>, DELETE /city/<name>"
+    return "Simple Cities API — endpoints: GET /city/<name>, POST /city, PUT /update-city, POST /delete-city, GET /cities"
 
-# READ
+# READ (single)
 @app.route("/city/<city_name>", methods=["GET"])
 def get_city(city_name):
     doc = cities.document(city_name.strip().lower()).get()
@@ -62,7 +62,6 @@ def update_city():
     doc_ref.set(data, merge=True)  # merge=True does partial update
     return jsonify({"message": "City updated", "data": doc_ref.get().to_dict()}), 200
 
-
 # DELETE
 @app.route("/delete-city", methods=["POST"])
 def delete_city():
@@ -80,8 +79,13 @@ def delete_city():
     doc_ref.delete()
     return jsonify({"message": "City deleted", "data": deleted}), 200
 
+# LIST ALL
+@app.route("/cities", methods=["GET"])
+def list_cities():
+    docs = cities.stream()
+    all_cities = [doc.to_dict() for doc in docs]
+    return jsonify(all_cities), 200
 
 if __name__ == "__main__":
-    import os
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0",port=port)
+    app.run(host="0.0.0.0", port=port)
