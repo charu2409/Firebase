@@ -1,215 +1,239 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Weather Dashboard</title>
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
   <style>
-    body { margin: 0; font-family: Arial, sans-serif; display: flex; height: 100vh; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f7f6;
+    }
+
+    /* Sidebar */
     .sidebar {
-      width: 60px; background-color: #2D6A77; color: white; display: flex; flex-direction: column;
-      align-items: center; padding: 20px 0;
+      width: 80px; /* widened */
+      background-color: #024731; /* green theme */
+      height: 100vh;
+      position: fixed;
+      padding-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    .sidebar i { font-size: 24px; margin: 20px 0; cursor: pointer; }
-    .sidebar i:hover { color: #72C2C4; }
-    .main { flex: 1; padding: 20px; background-color: #F9FBFB; }
-    .header { font-size: 24px; margin-bottom: 20px; color: #2D6A77; }
-    .search-bar { margin-bottom: 20px; }
-    .search-bar input { padding: 8px; width: 200px; }
-    .search-bar button {
-      padding: 8px 12px; background-color: #72C2C4; border: none; color: white; cursor: pointer;
+
+    .sidebar .logo {
+      width: 60px;   /* bigger logo */
+      height: 60px;
+      margin-bottom: 40px;
     }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; }
-    tr:nth-child(even) { background-color: #E8F1F2; }
-    tr:hover { background-color: #D3E8EA; }
-    .icon-btn { cursor: pointer; margin: 0 5px; color: #2D6A77; }
-    .icon-btn:hover { color: #72C2C4; }
-    .form-section { margin-top: 20px; padding: 10px; background: #fff; border: 1px solid #ddd; }
-    .form-section input { margin: 5px 0; padding: 8px; width: 100%; box-sizing: border-box; }
-    .form-section button { padding: 8px 12px; background-color: #72C2C4; border: none; color: white; cursor: pointer; }
-    .hidden { display: none; }
+
+    .sidebar a {
+      display: block;
+      margin: 20px 0;
+      font-size: 22px;
+      color: white;
+      text-align: center;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover {
+      color: #f1f1f1;
+    }
+
+    /* Main content */
+    .main {
+      margin-left: 80px; /* adjust for wider sidebar */
+      padding: 20px;
+    }
+
+    h2 {
+      color: #024731;
+    }
+
+    /* Search box */
+    .search-box {
+      display: flex;
+      margin-bottom: 20px;
+    }
+
+    .search-box input {
+      padding: 8px;
+      width: 250px;
+      border: 1px solid #ccc;
+      border-radius: 4px 0 0 4px;
+    }
+
+    .search-box button {
+      padding: 8px 12px;
+      border: none;
+      background: #024731;
+      color: white;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+    }
+
+    .search-box button:hover {
+      background: #036142;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    table th, table td {
+      text-align: left;
+      padding: 12px 15px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    table th {
+      background: #024731; /* green header */
+      color: white;
+    }
+
+    table tr:hover {
+      background: #f1f1f1;
+    }
+
+    /* Operations buttons */
+    .btn {
+      padding: 5px 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 2px;
+    }
+
+    .btn-edit {
+      background: #ffc107;
+      color: black;
+    }
+
+    .btn-delete {
+      background: #dc3545;
+      color: white;
+    }
+
+    .btn-edit:hover {
+      background: #e0a800;
+    }
+
+    .btn-delete:hover {
+      background: #c82333;
+    }
   </style>
 </head>
 <body>
-
+  <!-- Sidebar -->
   <div class="sidebar">
-    <div class="logo">🌤</div>
-    <i id="homeView" class="fas fa-home" title="Home"></i>
-    <i id="addView" class="fas fa-plus" title="Add City"></i>
+    <img src="/static/logo.png" alt="Logo" class="logo"> <!-- Replace with your logo path -->
+    <a href="#"><i class="fas fa-home"></i></a>
+    <a href="#"><i class="fas fa-plus"></i></a>
   </div>
 
+  <!-- Main -->
   <div class="main">
-    <div class="header">Weather Dashboard</div>
-    
-    <div id="searchSection" class="search-bar">
-      <input type="text" id="searchCity" placeholder="Search by city">
-      <button id="searchBtn">Search</button>
+    <h2>Weather Dashboard</h2>
+
+    <!-- Search -->
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search by city">
+      <button onclick="searchCity()">Search</button>
     </div>
 
-    <div id="tableSection">
-      <table id="cityTable">
-        <thead>
-          <tr>
-            <th>City</th><th>Air Quality</th><th>Humidity</th><th>Status</th><th>Temperature</th><th>Operations</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-
-    <div id="formSection" class="form-section hidden">
-      <h3>Add / Edit City</h3>
-      <input type="text" id="city" placeholder="City" required>
-      <input type="text" id="air_quality" placeholder="Air Quality">
-      <input type="text" id="humidity" placeholder="Humidity">
-      <input type="text" id="status" placeholder="Status">
-      <input type="text" id="temperature" placeholder="Temperature">
-      <button id="submitBtn">Submit</button>
-      <button id="cancelBtn" style="background:#aaa; margin-left:10px;">Cancel</button>
-    </div>
+    <!-- Table -->
+    <table id="cityTable">
+      <thead>
+        <tr>
+          <th>City</th>
+          <th>Air Quality</th>
+          <th>Humidity</th>
+          <th>Status</th>
+          <th>Temperature</th>
+          <th>Operations</th>
+        </tr>
+      </thead>
+      <tbody id="cityTableBody">
+        <!-- Dynamic rows will be inserted here -->
+      </tbody>
+    </table>
   </div>
 
-<script>
-const API_BASE = "";  // relative path → works both locally and deployed
+  <script>
+    async function fetchCities() {
+      const res = await fetch('/get-all-cities');
+      const cities = await res.json();
+      const tbody = document.getElementById("cityTableBody");
+      tbody.innerHTML = "";
 
-// UI Elements
-const homeView = document.getElementById("homeView");
-const addView = document.getElementById("addView");
-const searchSection = document.getElementById("searchSection");
-const tableSection = document.getElementById("tableSection");
-const formSection = document.getElementById("formSection");
-const cityTableBody = document.querySelector("#cityTable tbody");
+      cities.forEach(city => {
+        const row = `
+          <tr>
+            <td>${city.city}</td>
+            <td>${city.air_quality || '-'}</td>
+            <td>${city.humidity || '-'}</td>
+            <td>${city.status || '-'}</td>
+            <td>${city.temperature || '-'}</td>
+            <td>
+              <button class="btn btn-edit" onclick="editCity('${city.city}')">Edit</button>
+              <button class="btn btn-delete" onclick="deleteCity('${city.city}')">Delete</button>
+            </td>
+          </tr>
+        `;
+        tbody.innerHTML += row;
+      });
+    }
 
-const searchCity = document.getElementById("searchCity");
-const searchBtn = document.getElementById("searchBtn");
+    async function searchCity() {
+      const query = document.getElementById("searchInput").value.trim();
+      if (!query) return fetchCities();
+      const res = await fetch(`/city/${query.toLowerCase()}`);
+      if (res.status === 200) {
+        const city = await res.json();
+        const tbody = document.getElementById("cityTableBody");
+        tbody.innerHTML = `
+          <tr>
+            <td>${city.city}</td>
+            <td>${city.air_quality || '-'}</td>
+            <td>${city.humidity || '-'}</td>
+            <td>${city.status || '-'}</td>
+            <td>${city.temperature || '-'}</td>
+            <td>
+              <button class="btn btn-edit" onclick="editCity('${city.city}')">Edit</button>
+              <button class="btn btn-delete" onclick="deleteCity('${city.city}')">Delete</button>
+            </td>
+          </tr>`;
+      } else {
+        alert("City not found");
+      }
+    }
 
-const formFields = {
-  city: document.getElementById("city"),
-  air_quality: document.getElementById("air_quality"),
-  humidity: document.getElementById("humidity"),
-  status: document.getElementById("status"),
-  temperature: document.getElementById("temperature")
-};
-const submitBtn = document.getElementById("submitBtn");
-const cancelBtn = document.getElementById("cancelBtn");
+    async function deleteCity(cityName) {
+      if (!confirm(`Delete ${cityName}?`)) return;
+      await fetch('/delete-city', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ city: cityName })
+      });
+      fetchCities();
+    }
 
-let editMode = false;
+    function editCity(cityName) {
+      alert("Edit functionality not implemented yet for " + cityName);
+    }
 
-// Load all cities
-async function loadCities() {
-  const res = await fetch(`${API_BASE}/cities`);
-  const data = await res.json();
-  if (res.ok) renderRows(data);
-  else cityTableBody.innerHTML = "<tr><td colspan='6'>No cities found</td></tr>";
-}
-
-// Render Table Rows
-function renderRows(cities) {
-  cityTableBody.innerHTML = "";
-  cities.forEach(c => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${c.city}</td>
-      <td>${c.air_quality || ""}</td>
-      <td>${c.humidity || ""}</td>
-      <td>${c.status || ""}</td>
-      <td>${c.temperature || ""}</td>
-      <td>
-        <i class="fas fa-edit icon-btn" onclick="editCity('${c.city}')"></i>
-        <i class="fas fa-trash icon-btn" onclick="deleteCity('${c.city}')"></i>
-      </td>
-    `;
-    cityTableBody.appendChild(row);
-  });
-}
-
-// View toggles
-homeView.onclick = () => {
-  searchSection.classList.remove("hidden");
-  tableSection.classList.remove("hidden");
-  formSection.classList.add("hidden");
-  loadCities();
-};
-addView.onclick = () => {
-  searchSection.classList.add("hidden");
-  tableSection.classList.add("hidden");
-  formSection.classList.remove("hidden");
-  editMode = false;
-  submitBtn.textContent = "Add City";
-  Object.values(formFields).forEach(input => input.value = "");
-};
-
-// Search
-searchBtn.onclick = async () => {
-  const city = searchCity.value.trim();
-  if (!city) return alert("Enter city name.");
-  const res = await fetch(`${API_BASE}/city/${city}`);
-  const data = await res.json();
-  cityTableBody.innerHTML = "";
-  if (res.ok) renderRows([data]);
-  else alert(data.error || "City not found.");
-};
-
-// Edit
-window.editCity = city => {
-  editMode = true;
-  submitBtn.textContent = "Update City";
-  formSection.classList.remove("hidden");
-  searchSection.classList.add("hidden");
-  tableSection.classList.add("hidden");
-  fetch(`${API_BASE}/city/${city}`).then(r => r.json()).then(data => {
-    Object.keys(formFields).forEach(key => {
-      formFields[key].value = data[key] || "";
-    });
-  });
-};
-
-// Delete
-window.deleteCity = city => {
-  if (!confirm(`Delete city "${city}"?`)) return;
-  fetch(`${API_BASE}/delete-city`, {
-    method: "POST",
-    headers: {"Content-Type":"application/json"},
-    body: JSON.stringify({ city })
-  }).then(res => res.json())
-    .then(data => {
-      alert(data.message || data.error);
-      loadCities();
-    });
-};
-
-// Submit (Add / Update)
-submitBtn.onclick = () => {
-  const payload = {};
-  Object.keys(formFields).forEach(key => {
-    if (formFields[key].value.trim()) payload[key] = formFields[key].value.trim();
-  });
-  if (!payload.city) return alert("City is required.");
-
-  const url = editMode ? `${API_BASE}/update-city` : `${API_BASE}/city`;
-  const method = editMode ? "PUT" : "POST";
-
-  fetch(url, {
-    method,
-    headers: {"Content-Type":"application/json"},
-    body: JSON.stringify(payload)
-  })
-  .then(async res => {
-    const data = await res.json();
-    alert(data.message || data.error);
-    editMode = false;
-    homeView.click();
-  });
-};
-
-// Cancel
-cancelBtn.onclick = () => homeView.click();
-
-// Initial load
-loadCities();
-</script>
-
+    window.onload = fetchCities;
+  </script>
 </body>
 </html>
