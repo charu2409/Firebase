@@ -1,5 +1,5 @@
 import os,json
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import firebase_admin
 from firebase_admin import credentials, initialize_app,firestore
 
@@ -16,6 +16,10 @@ else:
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 cities = db.collection("cities")
+
+@app.route("/ui")
+def ui():
+    return render_template("index.html")
 
 @app.route("/")
 def home():
@@ -79,3 +83,4 @@ def delete_city():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
