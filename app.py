@@ -60,7 +60,7 @@ def update_city():
 
 
 # DELETE
-@app.route("/delete-city", methods=["DELETE"])
+@app.route("/delete-city", methods=["POST"])
 def delete_city():
     data = request.get_json()
     if not data or not data.get("city"):
@@ -79,6 +79,7 @@ def delete_city():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
