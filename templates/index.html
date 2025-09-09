@@ -72,7 +72,7 @@
   </div>
 
 <script>
-const API_BASE = "https://firebase-tyie.onrender.com";
+const API_BASE = "";  // relative path → works both locally and deployed
 
 // UI Elements
 const homeView = document.getElementById("homeView");
@@ -97,31 +97,13 @@ const cancelBtn = document.getElementById("cancelBtn");
 
 let editMode = false;
 
-// View toggles
-homeView.onclick = () => {
-  searchSection.classList.remove("hidden");
-  tableSection.classList.remove("hidden");
-  formSection.classList.add("hidden");
-};
-addView.onclick = () => {
-  searchSection.classList.add("hidden");
-  tableSection.classList.add("hidden");
-  formSection.classList.remove("hidden");
-  editMode = false;
-  submitBtn.textContent = "Add City";
-  Object.values(formFields).forEach(input => input.value = "");
-};
-
-// Search
-searchBtn.onclick = async () => {
-  const city = searchCity.value.trim();
-  if (!city) return alert("Enter city name.");
-  const res = await fetch(`${API_BASE}/city/${city}`);
+// Load all cities
+async function loadCities() {
+  const res = await fetch(`${API_BASE}/cities`);
   const data = await res.json();
-  cityTableBody.innerHTML = "";
-  if (res.ok) renderRows([data]);
-  else alert(data.error || "City not found.");
-};
+  if (res.ok) renderRows(data);
+  else cityTableBody.innerHTML = "<tr><td colspan='6'>No cities found</td></tr>";
+}
 
 // Render Table Rows
 function renderRows(cities) {
@@ -143,6 +125,33 @@ function renderRows(cities) {
   });
 }
 
+// View toggles
+homeView.onclick = () => {
+  searchSection.classList.remove("hidden");
+  tableSection.classList.remove("hidden");
+  formSection.classList.add("hidden");
+  loadCities();
+};
+addView.onclick = () => {
+  searchSection.classList.add("hidden");
+  tableSection.classList.add("hidden");
+  formSection.classList.remove("hidden");
+  editMode = false;
+  submitBtn.textContent = "Add City";
+  Object.values(formFields).forEach(input => input.value = "");
+};
+
+// Search
+searchBtn.onclick = async () => {
+  const city = searchCity.value.trim();
+  if (!city) return alert("Enter city name.");
+  const res = await fetch(`${API_BASE}/city/${city}`);
+  const data = await res.json();
+  cityTableBody.innerHTML = "";
+  if (res.ok) renderRows([data]);
+  else alert(data.error || "City not found.");
+};
+
 // Edit
 window.editCity = city => {
   editMode = true;
@@ -150,7 +159,6 @@ window.editCity = city => {
   formSection.classList.remove("hidden");
   searchSection.classList.add("hidden");
   tableSection.classList.add("hidden");
-  // Load city data
   fetch(`${API_BASE}/city/${city}`).then(r => r.json()).then(data => {
     Object.keys(formFields).forEach(key => {
       formFields[key].value = data[key] || "";
@@ -168,7 +176,7 @@ window.deleteCity = city => {
   }).then(res => res.json())
     .then(data => {
       alert(data.message || data.error);
-      searchBtn.click();
+      loadCities();
     });
 };
 
@@ -188,17 +196,19 @@ submitBtn.onclick = () => {
     headers: {"Content-Type":"application/json"},
     body: JSON.stringify(payload)
   })
-  .then(res => res.json())
-  .then(data => {
+  .then(async res => {
+    const data = await res.json();
     alert(data.message || data.error);
-    if (res && editMode) editMode = false;
-    addView.click();
+    editMode = false;
     homeView.click();
   });
 };
 
 // Cancel
-cancelBtn.onclick = () => addView.click();
+cancelBtn.onclick = () => homeView.click();
+
+// Initial load
+loadCities();
 </script>
 
 </body>
